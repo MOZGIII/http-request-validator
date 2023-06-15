@@ -19,3 +19,41 @@ pub trait Validator<Data: bytes::Buf> {
         buffered_body: &Data,
     ) -> Result<(), Self::Error>;
 }
+
+#[async_trait::async_trait]
+impl<T, Data> Validator<Data> for &T
+where
+    T: Validator<Data> + Send + Sync,
+    Data: bytes::Buf + Send + Sync,
+{
+    type Error = T::Error;
+
+    async fn validate(
+        &self,
+        parts: &http::request::Parts,
+        buffered_body: &Data,
+    ) -> Result<(), Self::Error> {
+        <&T as std::ops::Deref>::deref(self)
+            .validate(parts, buffered_body)
+            .await
+    }
+}
+
+#[async_trait::async_trait]
+impl<T, Data> Validator<Data> for std::sync::Arc<T>
+where
+    T: Validator<Data> + Send + Sync,
+    Data: bytes::Buf + Send + Sync,
+{
+    type Error = T::Error;
+
+    async fn validate(
+        &self,
+        parts: &http::request::Parts,
+        buffered_body: &Data,
+    ) -> Result<(), Self::Error> {
+        <std::sync::Arc<T> as std::ops::Deref>::deref(self)
+            .validate(parts, buffered_body)
+            .await
+    }
+}
