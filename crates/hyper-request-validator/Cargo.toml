@@ -1,0 +1,14 @@
+[package]
+name = "hyper-request-validator"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+http-request-validator = { version = "0.1", path = "../http-request-validator" }
+http-body-request-validator = { version = "0.1", path = "../http-body-request-validator" }
+
+async-trait = "0.1"
+hyper = { version = "0.14", default-features = false, features = [] }
+bytes = "1.4"
+http = "0.2"
+http-body = "0.4"

@@ -1,0 +1,12 @@
+[package]
+name = "axum-request-validator"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+http-request-validator = { version = "0.1", path = "../http-request-validator" }
+hyper-request-validator = { version = "0.1", path = "../hyper-request-validator" }
+
+async-trait = "0.1"
+axum = { version = "0.6", default-features = false }
+bytes = "1"

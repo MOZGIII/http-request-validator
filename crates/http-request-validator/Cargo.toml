@@ -1,0 +1,9 @@
+[package]
+name = "http-request-validator"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+async-trait = "0.1"
+bytes = "1.4"
+http = "0.2"
