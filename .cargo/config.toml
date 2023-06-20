@@ -31,6 +31,5 @@ rustflags = [
   "-Wclippy::unsafe_derive_deserialize",
   "-Wclippy::match_on_vec_items",
   # A few exceptions.
-  "-Aclippy::cargo-common-metadata",
   "-Aclippy::derive-partial-eq-without-eq",
 ]
