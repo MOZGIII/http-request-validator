@@ -1,6 +1,6 @@
 [package]
 name = "http-body-request-validator"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 description = """
 The http-request-validator integration with http-body.
@@ -12,9 +12,17 @@ keywords = ["http", "validation", "webhook"]
 categories = ["network-programming"]
 
 [dependencies]
-http-request-validator = { version = "0.1", path = "../http-request-validator" }
+http-request-validator = { version = "0.2", path = "../http-request-validator" }
 
-async-trait = "0.1"
 bytes = "1.4"
-http = "0.2"
-http-body = "0.4"
+http = "1"
+http-body = "1"
+http-body-util = { version = "0.1", optional = true }
+pin-project-lite = { version = "0.2", optional = true }
+
+[features]
+default = ["http-body-util", "buffered", "alloc"]
+
+http-body-util = ["dep:http-body-util", "buffered"]
+buffered = ["dep:pin-project-lite"]
+alloc = []
