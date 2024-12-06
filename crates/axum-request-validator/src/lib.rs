@@ -8,10 +8,11 @@ use axum::{
     response::IntoResponse,
 };
 
-pub use hyper_request_validator::{validate, Error};
+/// The [`axum`]-specific validation error type.
+pub type Error<V> = http_body_request_validator::Error<axum::Error, V>;
 
 /// The error handler for the validation errors.
-#[async_trait::async_trait]
+#[axum::async_trait]
 pub trait ErrorHandler<V> {
     /// Whatever the handler should respond with.
     type Response: IntoResponse;
@@ -20,11 +21,11 @@ pub trait ErrorHandler<V> {
     async fn handle_error(&self, error: Error<V>) -> Self::Response;
 }
 
-/// A an error renderer that wil simply.
+/// A an error renderer that will simply.
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
 pub struct PlainDisplayErrorRenderer;
 
-#[async_trait::async_trait]
+#[axum::async_trait]
 impl<V> ErrorHandler<V> for PlainDisplayErrorRenderer
 where
     V: std::fmt::Display + Send,
@@ -46,19 +47,62 @@ where
     }
 }
 
+/// The bufferer data type used by axum.
+pub type BuffererData = bytes::Bytes;
+
+/// The bufferer type used by axum.
+pub type Bufferer = http_body_request_validator::http_body_util::Bufferer<bytes::Bytes>;
+
+/// The bufferer buffered type used by axum.
+pub type BuffererBuffered = http_body_request_validator::bufferer::BufferedFor<Bufferer, Body>;
+
+#[cfg(test)]
+static_assertions::assert_type_eq_all!(BuffererData, bytes::Bytes);
+
+/// The custom implementation of the [`http_body_request_validator::convert::BufferedToBody`] for
+/// axum [`Body`].
+enum CustomBufferedToBody {}
+
+impl http_body_request_validator::convert::BufferedToBody for CustomBufferedToBody {
+    type Buffered = BuffererBuffered;
+    type Body = Body;
+
+    fn buffered_to_body(buffered: Self::Buffered) -> Self::Body {
+        let body =
+            http_body_request_validator::convert::Trivial::<Self::Buffered>::buffered_to_body(
+                buffered,
+            );
+        Body::new(body)
+    }
+}
+
+/// Validate the [`axum`] request.
+pub async fn validate<Validator>(
+    validator: Validator,
+    req: Request<Body>,
+) -> Result<Request<Body>, Error<Validator::Error>>
+where
+    Validator: http_request_validator::Validator<BuffererData>,
+{
+    http_body_request_validator::BufferingValidator::new(Bufferer::new())
+        .with_buffered_to_out_body::<CustomBufferedToBody>()
+        .validate(validator, req)
+        .await
+}
+
 /// [`axum`] middleware implementation.
 ///
 /// Pass the error handler you need to handle the validation errors.
 pub async fn middleware<Validator, ErrorHandler>(
     State((validator, error_handler)): State<(Validator, ErrorHandler)>,
     req: Request<Body>,
-    next: Next<Body>,
+    next: Next,
 ) -> Result<
     axum::response::Response,
     <ErrorHandler as self::ErrorHandler<Validator::Error>>::Response,
 >
 where
-    Validator: http_request_validator::Validator<bytes::Bytes>,
+    Validator: http_request_validator::Validator<BuffererData>,
     ErrorHandler: self::ErrorHandler<Validator::Error>,
 {
     let req = match validate(validator, req).await {
@@ -73,14 +117,14 @@ where
 pub async fn simple_middleware<Validator>(
     State(validator): State<Validator>,
     req: Request<Body>,
-    next: Next<Body>,
+    next: Next,
 ) -> Result<
     axum::response::Response,
     <PlainDisplayErrorRenderer as ErrorHandler<Validator::Error>>::Response,
 >
 where
-    Validator: http_request_validator::Validator<bytes::Bytes> + Send,
-    <Validator as http_request_validator::Validator<bytes::Bytes>>::Error:
+    Validator: http_request_validator::Validator<BuffererData> + Send,
+    <Validator as http_request_validator::Validator<BuffererData>>::Error:
         std::fmt::Display + Send + 'static,
 {
     let error_handler = PlainDisplayErrorRenderer;

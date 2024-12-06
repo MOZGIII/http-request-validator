@@ -1,6 +1,6 @@
 [package]
 name = "http-request-validator"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 description = """
 Abstract HTTP request validation interface, providing access to \
@@ -15,6 +15,5 @@ keywords = ["http", "validation", "webhook"]
 categories = ["network-programming"]
 
 [dependencies]
-async-trait = "0.1"
 bytes = "1.4"
-http = "0.2"
+http = "1"
