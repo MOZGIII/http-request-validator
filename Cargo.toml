@@ -1,3 +1,7 @@
 [workspace]
 resolver = "2"
 members = ["crates/*"]
+
+# [patch.crates-io]
+# http-body = { path = "../http-body/http-body" }
+# http-body-util = { path = "../http-body/http-body-util" }
