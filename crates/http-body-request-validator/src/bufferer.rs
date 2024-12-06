@@ -20,3 +20,6 @@ pub type BufferedFor<Bufferer, InBody> = <Bufferer as self::Bufferer<InBody>>::B
 
 /// Extract bufferer data type.
 pub type DataFor<Bufferer, InBody> = <BufferedFor<Bufferer, InBody> as crate::AsBuf>::Data;
+
+/// Extract bufferer error type.
+pub type ErrorFor<Bufferer, InBody> = <Bufferer as self::Bufferer<InBody>>::Error;

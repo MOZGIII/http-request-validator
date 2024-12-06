@@ -1,0 +1,36 @@
+[package]
+name = "tower-http-request-validator"
+version = "0.1.0"
+edition = "2021"
+description = """
+The http-request-validator integration with tower.
+"""
+license = "MIT"
+repository = "https://github.com/MOZGIII/http-request-validator.git"
+readme = "../../README.md"
+keywords = ["http", "validation", "webhook"]
+categories = ["network-programming"]
+
+[dependencies]
+http-request-validator = { version = "0.2", path = "../http-request-validator" }
+http-body-request-validator = { version = "0.2", path = "../http-body-request-validator", default-features = false, features = [
+  "alloc",
+] }
+
+http = "1"
+http-body = "1"
+tower-layer = "0.3"
+tower-service = "0.3"
+axum = { version = "0.7", optional = true }
+
+[dev-dependencies]
+static_assertions = "1"
+axum = "0.7"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "net"] }
+bytes = "1"
+tower = "0.5"
+
+[features]
+default = ["axum"]
+
+axum = ["dep:axum"]
