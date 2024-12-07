@@ -12,15 +12,15 @@ keywords = ["http", "validation", "webhook"]
 categories = ["network-programming"]
 
 [dependencies]
-http-request-validator = { version = "0.2", path = "../http-request-validator" }
 http-body-request-validator = { version = "0.2", path = "../http-body-request-validator", default-features = false, features = [
   "http-body-util",
 ] }
+http-request-validator = { version = "0.2", path = "../http-request-validator" }
 
 axum = { version = "0.7", default-features = false }
 bytes = "1"
 
 [dev-dependencies]
-static_assertions = "1"
 axum = { version = "0.7" }
+static_assertions = "1"
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "net"] }
