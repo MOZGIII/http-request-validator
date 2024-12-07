@@ -1,6 +1,6 @@
 [package]
 name = "axum-request-validator"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 description = """
 The http-request-validator integration with axum.
@@ -19,8 +19,6 @@ http-body-request-validator = { version = "0.2", path = "../http-body-request-va
 
 axum = { version = "0.7", default-features = false }
 bytes = "1"
-tower-layer = "0.3"
-tower-service = "0.3"
 
 [dev-dependencies]
 static_assertions = "1"

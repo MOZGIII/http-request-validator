@@ -85,7 +85,7 @@ dependencies = [
 
 [[package]]
 name = "axum-request-validator"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "axum",
  "bytes",
@@ -93,8 +93,6 @@ dependencies = [
  "http-request-validator",
  "static_assertions",
  "tokio",
- "tower-layer",
- "tower-service",
 ]
 
 [[package]]
