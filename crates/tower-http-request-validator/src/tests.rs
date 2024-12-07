@@ -39,6 +39,6 @@ impl tower_service::Service<axum::http::Request<axum::body::Body>> for MockInner
 }
 
 static_assertions::assert_impl_all!(
-  super::Service<MockInnerService, SampleValidator, crate::axum::Bufferer, axum::body::Body, crate::axum::BufferedToBody<axum::body::Body>>:
+  super::Service<MockInnerService, SampleValidator, crate::axum::Bufferer, axum::body::Body, crate::axum::BufferedToBody>:
   tower_service::Service<axum::http::Request<axum::body::Body>, Error = crate::axum::Error<(), core::convert::Infallible>>,
 );

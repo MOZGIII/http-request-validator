@@ -6,16 +6,13 @@ use axum::body::Body;
 pub type Error<V> = http_body_request_validator::Error<axum::Error, V>;
 
 /// The bufferer and validator data type to use for axum.
-pub type Data = bytes::Bytes;
+pub type Data = axum::body::Bytes;
 
 /// The bufferer type used by axum.
 pub type Bufferer = http_body_request_validator::http_body_util::Bufferer<Data>;
 
 /// The bufferer buffered type used by axum.
 pub type BuffererBuffered = http_body_request_validator::bufferer::BufferedFor<Bufferer, Body>;
-
-#[cfg(test)]
-static_assertions::assert_type_eq_all!(Data, bytes::Bytes);
 
 /// The custom implementation of the [`http_body_request_validator::convert::BufferedToBody`] for
 /// axum [`Body`].

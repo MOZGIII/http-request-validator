@@ -122,31 +122,14 @@ impl<S, Validator, Bufferer, InBody, BufferedToOutBody>
     tower_service::Service<http::Request<InBody>>
     for Service<S, Validator, Bufferer, InBody, BufferedToOutBody>
 where
-    InBody: http_body::Body<Data: Send + Sync, Error: Send + Sync> + 'static,
-    Bufferer: http_body_request_validator::Bufferer<InBody, Buffered: Send + Sync, Error: Send + Sync>
-        + Send
-        + Sync
-        + 'static,
+    InBody: http_body::Body + 'static,
+    Bufferer: http_body_request_validator::Bufferer<InBody, Buffered: , Error: > + 'static,
     Validator: http_request_validator::Validator<
             http_body_request_validator::bufferer::DataFor<Bufferer, InBody>,
-            Error: Send + Sync,
-        > + Send
-        + Sync
+        > + 'static,
+    BufferedToOutBody: http_body_request_validator::convert::BufferedToBody<Buffered = Bufferer::Buffered>
         + 'static,
-    BufferedToOutBody: http_body_request_validator::convert::BufferedToBody<
-            Buffered = Bufferer::Buffered,
-            Body: Send + Sync,
-        > + Send
-        + Sync
-        + 'static,
-    S: tower_service::Service<
-            http::Request<BufferedToOutBody::Body>,
-            Error: Send + Sync,
-            Response: Send + Sync,
-            Future: Send + Sync,
-        > + Send
-        + Sync
-        + 'static,
+    S: tower_service::Service<http::Request<BufferedToOutBody::Body>> + 'static,
 
     Bufferer: Clone,
     Validator: Clone,
@@ -171,26 +154,14 @@ where
 impl<S, Validator, Bufferer, InBody, BufferedToOutBody>
     Service<S, Validator, Bufferer, InBody, BufferedToOutBody>
 where
-    InBody: http_body::Body<Data: Send, Error: Send> + Send + 'static,
-    Bufferer:
-        http_body_request_validator::Bufferer<InBody, Buffered: Send, Error: Send> + Send + 'static,
+    InBody: http_body::Body + 'static,
+    Bufferer: http_body_request_validator::Bufferer<InBody, Buffered: , Error: > + 'static,
     Validator: http_request_validator::Validator<
             http_body_request_validator::bufferer::DataFor<Bufferer, InBody>,
-            Error: Send,
-        > + Send
+        > + 'static,
+    BufferedToOutBody: http_body_request_validator::convert::BufferedToBody<Buffered = Bufferer::Buffered>
         + 'static,
-    BufferedToOutBody: http_body_request_validator::convert::BufferedToBody<
-            Buffered = Bufferer::Buffered,
-            Body: Send,
-        > + Send
-        + 'static,
-    S: tower_service::Service<
-            http::Request<BufferedToOutBody::Body>,
-            Error: Send,
-            Response: Send,
-            Future: Send,
-        > + Send
-        + 'static,
+    S: tower_service::Service<http::Request<BufferedToOutBody::Body>> + 'static,
 
     Bufferer: Clone,
     Validator: Clone,
@@ -251,14 +222,3 @@ where
 /// The response future.
 pub type ResponseFuture<T> =
     core::pin::Pin<alloc::boxed::Box<dyn core::future::Future<Output = T> + Send + 'static>>;
-
-// impl<T> core::future::Future for ResponseFuture<T> {
-//     type Output = T;
-
-//     fn poll(
-//         mut self: core::pin::Pin<&mut Self>,
-//         cx: &mut core::task::Context<'_>,
-//     ) -> core::task::Poll<Self::Output> {
-//         core::pin::Pin::new(&mut self.0).poll(cx)
-//     }
-// }
