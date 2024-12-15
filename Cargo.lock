@@ -544,6 +544,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "tower-http-request-validator"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "bytes",
+ "http",
+ "http-body",
+ "http-body-request-validator",
+ "http-request-validator",
+ "static_assertions",
+ "tokio",
+ "tower",
+ "tower-layer",
+ "tower-service",
+]
+
+[[package]]
 name = "tower-layer"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
