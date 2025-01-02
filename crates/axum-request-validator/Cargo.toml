@@ -17,10 +17,10 @@ http-body-request-validator = { version = "0.2", path = "../http-body-request-va
 ] }
 http-request-validator = { version = "0.2", path = "../http-request-validator" }
 
-axum = { version = "0.7", default-features = false }
+axum = { version = "0.8", default-features = false }
 bytes = "1"
 
 [dev-dependencies]
-axum = { version = "0.7" }
+axum = { version = "0.8" }
 static_assertions = "1"
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "net"] }
