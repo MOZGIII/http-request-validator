@@ -15,5 +15,5 @@ keywords = ["http", "validation", "webhook"]
 categories = ["network-programming"]
 
 [dependencies]
-bytes = "1.4"
+bytes = "1.10"
 http = "1"
