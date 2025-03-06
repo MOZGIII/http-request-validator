@@ -14,7 +14,7 @@ categories = ["network-programming"]
 [dependencies]
 http-request-validator = { version = "0.2", path = "../http-request-validator" }
 
-bytes = "1.4"
+bytes = "1.10"
 http = "1"
 http-body = "1"
 http-body-util = { version = "0.1", optional = true }
